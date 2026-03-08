@@ -133,7 +133,7 @@ Return ONLY valid JSON, no markdown, no preamble:
 Sort this_week by urgency descending.`;
 
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+     const res = await fetch("/.netlify/functions/claude", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
