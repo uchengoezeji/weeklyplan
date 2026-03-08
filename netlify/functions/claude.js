@@ -1,8 +1,20 @@
 const https = require("https");
 
 exports.handler = async function(event) {
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "POST, OPTIONS"
+      },
+      body: ""
+    };
+  }
+
   const body = event.body;
-  
+
   return new Promise((resolve) => {
     const options = {
       hostname: "api.anthropic.com",
@@ -22,14 +34,21 @@ exports.handler = async function(event) {
       res.on("end", () => {
         resolve({
           statusCode: 200,
-          headers: { "Access-Control-Allow-Origin": "*" },
+          headers: { 
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json"
+          },
           body: data
         });
       });
     });
 
     req.on("error", (e) => {
-      resolve({ statusCode: 500, body: JSON.stringify({ error: e.message }) });
+      resolve({ 
+        statusCode: 500, 
+        headers: { "Access-Control-Allow-Origin": "*" },
+        body: JSON.stringify({ error: e.message }) 
+      });
     });
 
     req.write(body);
